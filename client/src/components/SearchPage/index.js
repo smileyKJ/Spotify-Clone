@@ -36,13 +36,6 @@ class SearchPage extends React.Component {
         id: [...prevState.id, response.items[i].id]
       }));
     }
-    spotifyApi
-      .getRecommendations({
-        seed_genres: "dream pop",
-        market: "US",
-        seed_tracks: `${this.state.id[0]}`
-      })
-      .then(response => console.log(response));
   };
 
   componentDidMount() {
