@@ -83,11 +83,20 @@ class SongsPage extends React.Component {
   }
 
   render() {
-    if (this.state.redirect) {
+    if (this.state.redirect && window.location.hash.length < 579) {
       return (
         <Redirect
           to={{
             pathname: `/home/${window.location.hash.substring(221)}`
+          }}
+        />
+      );
+    } else if (this.state.redirect) {
+      return (
+        <Redirect
+          to={{
+            pathname: `/search/${window.location.hash.substring(0, 195) +
+              window.location.hash.substring(219)}`
           }}
         />
       );
@@ -99,6 +108,7 @@ class SongsPage extends React.Component {
       imageUrl,
       preview_url
     } = this.state.artistTracks;
+
     const items = [];
     for (let i = 0; i < 4; i++) {
       items.push(

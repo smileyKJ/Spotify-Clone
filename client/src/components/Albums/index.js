@@ -45,6 +45,7 @@ class Albums extends React.Component {
               this.props.id
             }/#${window.location.hash}`
           }}
+          currentPage="home"
         />
       );
     }

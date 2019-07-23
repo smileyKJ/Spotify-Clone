@@ -3,6 +3,7 @@ import "./App.css";
 import SpotifyWebApi from "spotify-web-api-js";
 import Homepage from "./components/Homepage";
 import SongsPage from "./components/SongsPage";
+import SearchPage from "./components/SearchPage";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 const spotifyApi = new SpotifyWebApi();
@@ -25,6 +26,9 @@ export default class App extends Component {
       heavyRotation: { name: [], imageUrl: [], id: [] },
       token: token
     };
+    spotifyApi
+      .getMyRecentlyPlayedTracks()
+      .then(response => this.getRecentlyPlayedArtistsAndImages(response));
 
     this.getRecentlyPlayedArtistsAndImages = this.getRecentlyPlayedArtistsAndImages.bind(
       this
@@ -66,10 +70,6 @@ export default class App extends Component {
   }
 
   componentDidMount() {
-    spotifyApi
-      .getMyRecentlyPlayedTracks()
-      .then(response => this.getRecentlyPlayedArtistsAndImages(response));
-
     spotifyApi.getMyTopTracks().then(response => this.getMyTopTracks(response));
   }
 
@@ -97,6 +97,8 @@ export default class App extends Component {
               <Homepage
                 recentlyPlayedTracks={this.state.recentlyPlayedTracks}
                 HeavyRotation={this.state.heavyRotation}
+                token={this.state.token}
+                url={window.location.hash}
               />
             )}
           />
@@ -104,6 +106,7 @@ export default class App extends Component {
             path="/songs/"
             component={() => <SongsPage token={this.state.token} />}
           />
+          <Route path="/search/" component={() => <SearchPage />} />
         </Switch>
       </Router>
     );

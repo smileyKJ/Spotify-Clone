@@ -1,27 +1,13 @@
-/**
- * This is an example of a basic node.js script that performs
- * the Authorization Code oAuth2 flow to authenticate against
- * the Spotify Accounts.
- *
- * For more information, read
- * https://developer.spotify.com/web-api/authorization-guide/#authorization_code_flow
- */
-
-var express = require("express"); // Express web server framework
-var request = require("request"); // "Request" library
+var express = require("express");
+var request = require("request");
 var cors = require("cors");
 var querystring = require("querystring");
 var cookieParser = require("cookie-parser");
 
-var client_id = "3d014aa393de4dc7b7408ce06f255778"; // Your client id
-var client_secret = "db005965258a41cba8faf88cc18f412a"; // Your secret
-var redirect_uri = "http://localhost:8888/callback"; // Your redirect uri
+var client_id = "3d014aa393de4dc7b7408ce06f255778";
+var client_secret = "db005965258a41cba8faf88cc18f412a";
+var redirect_uri = "http://localhost:8888/callback";
 
-/**
- * Generates a random string containing numbers and letters
- * @param  {number} length The length of the string
- * @return {string} The generated string
- */
 var generateRandomString = function(length) {
   var text = "";
   var possible =
@@ -46,7 +32,6 @@ app.get("/login", function(req, res) {
   var state = generateRandomString(16);
   res.cookie(stateKey, state);
 
-  // your application requests authorization
   var scope =
     "user-read-private user-read-email user-read-playback-state user-read-recently-played user-top-read";
   res.redirect(
@@ -62,9 +47,6 @@ app.get("/login", function(req, res) {
 });
 
 app.get("/callback", function(req, res) {
-  // your application requests refresh and access tokens
-  // after checking the state parameter
-
   var code = req.query.code || null;
   var state = req.query.state || null;
   var storedState = req.cookies ? req.cookies[stateKey] : null;
@@ -104,12 +86,10 @@ app.get("/callback", function(req, res) {
           json: true
         };
 
-        // use the access token to access the Spotify Web API
         request.get(options, function(error, response, body) {
           console.log(body);
         });
 
-        // we can also pass the token to the browser to make requests from there
         res.redirect(
           "http://localhost:3000/home/#" +
             querystring.stringify({
@@ -130,7 +110,6 @@ app.get("/callback", function(req, res) {
 });
 
 app.get("/refresh_token", function(req, res) {
-  // requesting access token from refresh token
   var refresh_token = req.query.refresh_token;
   var authOptions = {
     url: "https://accounts.spotify.com/api/token",

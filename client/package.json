@@ -4,15 +4,12 @@
   "private": true,
   "dependencies": {
     "react": "^16.8.6",
-    "react-cookie": "^4.0.1",
-    "react-cookies": "^0.1.1",
     "react-dom": "^16.8.6",
     "react-router-dom": "^5.0.1",
     "react-scripts": "3.0.1",
     "react-transition-group": "^4.2.1",
     "spotify-web-api-js": "^1.2.0",
-    "styled-components": "^4.3.2",
-    "universal-cookie": "^4.0.2"
+    "styled-components": "^4.3.2"
   },
   "scripts": {
     "start": "react-scripts start",
