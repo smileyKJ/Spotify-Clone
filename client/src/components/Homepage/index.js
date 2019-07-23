@@ -10,7 +10,6 @@ class Homepage extends React.Component {
     this.state = { currentPage: "home" };
   }
   render() {
-    console.log(this.props.location);
     return (
       <HomeWrapper>
         <Header />
