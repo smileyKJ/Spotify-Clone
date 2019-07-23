@@ -28,7 +28,11 @@ class NavBar extends React.Component {
   };
 
   render() {
-    if (this.props.currentPage !== "search" && this.state.redirect) {
+    if (
+      this.props.currentPage !== "songs" &&
+      this.props.currentPage !== "search" &&
+      this.state.redirect
+    ) {
       return (
         <Redirect
           to={{
@@ -38,7 +42,11 @@ class NavBar extends React.Component {
       );
     }
 
-    if (this.props.currentPage === "search" && this.state.homeRedirect) {
+    if (
+      this.props.currentPage !== "songs" &&
+      this.props.currentPage === "search" &&
+      this.state.homeRedirect
+    ) {
       return (
         <Redirect
           to={{

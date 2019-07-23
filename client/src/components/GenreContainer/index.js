@@ -6,9 +6,9 @@ const GenreContainer = props => {
   return (
     <GenreWrapper>
       <GenreItem
-        id={props.id[4]}
-        TopGenres={props.TopGenres[4]}
-        genreImage={props.genreImages[4]}
+        id={props.id[0]}
+        TopGenres={props.TopGenres[0]}
+        genreImage={props.genreImages[0]}
         token={props.token}
       />
       <GenreItem

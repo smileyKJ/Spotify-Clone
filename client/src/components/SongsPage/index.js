@@ -60,25 +60,27 @@ class SongsPage extends React.Component {
   }
 
   getArtistTracks(response) {
-    for (let i = 0; i < 4; i++) {
-      this.setState(prevState => {
-        let artistTracks = Object.assign({}, prevState.artistTracks);
-        artistTracks.trackName.push(response.tracks[i].name);
-        artistTracks.albumName.push(response.tracks[i].album.name);
-        artistTracks.preview_url.push(response.tracks[i].preview_url);
-        artistTracks.imageUrl.push(response.tracks[i].album.images[2].url);
-        return { artistTracks };
-      });
+    for (let i = 0; i < 10; i++) {
+      if (response.tracks[i] !== undefined) {
+        this.setState(prevState => {
+          let artistTracks = Object.assign({}, prevState.artistTracks);
+          artistTracks.trackName.push(response.tracks[i].name);
+          artistTracks.albumName.push(response.tracks[i].album.name);
+          artistTracks.preview_url.push(response.tracks[i].preview_url);
+          artistTracks.imageUrl.push(response.tracks[i].album.images[2].url);
+          return { artistTracks };
+        });
+      }
     }
   }
 
   componentDidMount() {
     spotifyApi
-      .getArtist(`${this.state.id}`, "IN")
+      .getArtist(`${this.state.id}`, "US")
       .then(response => this.getArtistNameAndUrl(response));
 
     spotifyApi
-      .getArtistTopTracks(`${this.state.id}`, "IN")
+      .getArtistTopTracks(`${this.state.id}`, "US")
       .then(response => this.getArtistTracks(response));
   }
 
@@ -110,7 +112,7 @@ class SongsPage extends React.Component {
     } = this.state.artistTracks;
 
     const items = [];
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < 10; i++) {
       items.push(
         <SongContainer
           TrackName={trackName[i]}
@@ -143,7 +145,7 @@ class SongsPage extends React.Component {
           controls
           autoPlay
         />
-        <NavBar />
+        <NavBar currentPage="songs" />
       </SongsWrapper>
     );
   }

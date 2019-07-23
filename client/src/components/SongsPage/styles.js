@@ -17,6 +17,7 @@ export const HeaderContainer = styled.div`
 `;
 
 export const SectionContainer = styled.div`
+  overflow: auto;
   display: flex;
   flex-direction: column;
   justify-content: space-between;

@@ -3,10 +3,7 @@ import styled from "styled-components";
 export const Wrapper = styled.div`
   display: flex;
   flex-direction: row;
-
-  :last-child {
-    margin-bottom: 25px;
-  }
+  margin-bottom: 50px;
 `;
 
 export const StyledImg = styled.img`

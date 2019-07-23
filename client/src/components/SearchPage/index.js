@@ -22,10 +22,13 @@ class SearchPage extends React.Component {
       genreImg: [],
       id: [],
       token: window.location.hash.substring(1, 195),
-      currentPage: "search"
+      currentPage: "search",
+      searchTerm: ""
     };
     spotifyApi.getAccessToken(this.state.token);
     this.getGenres = this.getGenres.bind(this);
+    this.handleSearchChange = this.handleSearchChange.bind(this);
+    this.getSearchItem = this.getSearchItem.bind(this);
   }
 
   getGenres = response => {
@@ -36,13 +39,44 @@ class SearchPage extends React.Component {
         id: [...prevState.id, response.items[i].id]
       }));
     }
-    spotifyApi
-      .getRecommendations({
-        seed_genres: "dream pop",
-        market: "US",
-        seed_tracks: `${this.state.id[0]}`
-      })
-      .then(response => console.log(response));
+  };
+
+  getSearchItem = response => {
+    this.setState({
+      TopGenres: [],
+      genreImg: [],
+      id: []
+    });
+    for (let i = 0; i <= 4; i++) {
+      if (
+        response.artists.items[i] !== undefined &&
+        response.artists.items[i].name !== undefined &&
+        response.artists.items[i].images[1] !== undefined &&
+        response.artists.items[i].id !== undefined
+      ) {
+        this.setState(prevState => ({
+          TopGenres: [...prevState.TopGenres, response.artists.items[i].name],
+          genreImg: [
+            ...prevState.genreImg,
+            response.artists.items[i].images[1].url
+          ],
+          id: [...prevState.id, response.artists.items[i].id]
+        }));
+      }
+    }
+  };
+
+  handleSearchChange = e => {
+    this.setState(
+      {
+        searchTerm: e.target.value
+      },
+      () => {
+        spotifyApi
+          .search(`${this.state.searchTerm}`, ["artist"])
+          .then(response => this.getSearchItem(response));
+      }
+    );
   };
 
   componentDidMount() {
@@ -74,7 +108,10 @@ class SearchPage extends React.Component {
                 }}
               />
             </IconWrapper>
-            <StyledInput placeholder="Artists, songs, or podcasts" />
+            <StyledInput
+              placeholder="Artist related songs"
+              onChange={event => this.handleSearchChange(event)}
+            />
             <IconWrapper
               style={{
                 borderRadius: "0 50px 50px 0"
