@@ -39,7 +39,6 @@ class SearchPage extends React.Component {
         id: [...prevState.id, response.items[i].id]
       }));
     }
-<<<<<<< HEAD
   };
 
   getSearchItem = response => {
@@ -78,8 +77,6 @@ class SearchPage extends React.Component {
           .then(response => this.getSearchItem(response));
       }
     );
-=======
->>>>>>> 8206616c125176509d1723994ef8c8a91e7c245c
   };
 
   componentDidMount() {
