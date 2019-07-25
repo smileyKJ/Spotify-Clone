@@ -9,7 +9,7 @@ import {
 
 const SongContainer = props => {
   return (
-    <Wrapper onClick={() => props.onClick(props.preview)}>
+    <Wrapper onClick={() => props.onClick(props)}>
       <div>
         <StyledImg src={props.ImageUrl} alt="Album-small" />
       </div>

@@ -6,12 +6,16 @@ import {
   HeaderContainer,
   SectionContainer,
   SongsWrapper,
-  StyledAudio
+  StyledAudio,
+  AudioWrapper,
+  MusicPlayer
 } from "./styles";
 import SongContainer from "../SongContainer/index";
 import NavBar from "../NavBar/index";
 import { Icon } from "@iconify/react";
 import baselineKeyboardArrowLeft from "@iconify/icons-ic/baseline-keyboard-arrow-left";
+import baselineSkipPrevious from "@iconify/icons-ic/baseline-skip-previous";
+import baselineSkipNext from "@iconify/icons-ic/baseline-skip-next";
 
 const spotifyApi = new SpotifyWebApi();
 
@@ -29,13 +33,59 @@ class SongsPage extends React.Component {
         preview_url: []
       },
       currentPlaying: "",
-      redirect: false
+      currentTrack: "",
+      currentImage: "",
+      redirect: false,
+      customPlayer: false
     };
 
     this.getArtistNameAndUrl = this.getArtistNameAndUrl.bind(this);
     this.getArtistTracks = this.getArtistTracks.bind(this);
     this.handleClick = this.handleClick.bind(this);
     this.handleRedirect = this.handleRedirect.bind(this);
+    this.handleCustomPlayer = this.handleCustomPlayer.bind(this);
+    this.handleNextTrack = this.handleNextTrack.bind(this);
+    this.handlePreviousTrack = this.handlePreviousTrack.bind(this);
+  }
+
+  handlePreviousTrack() {
+    for (let i = 0; i < this.state.artistTracks.trackName.length; i++) {
+      if (this.state.currentTrack === this.state.artistTracks.trackName[i]) {
+        if (i === 0) {
+          this.setState({
+            currentTrack: this.state.artistTracks.trackName[9],
+            currentImage: this.state.artistTracks.imageUrl[9],
+            currentPlaying: this.state.artistTracks.preview_url[9]
+          });
+        } else {
+          this.setState({
+            currentTrack: this.state.artistTracks.trackName[(i - 1) % 9],
+            currentImage: this.state.artistTracks.imageUrl[(i - 1) % 9],
+            currentPlaying: this.state.artistTracks.preview_url[(i - 1) % 9]
+          });
+        }
+      }
+    }
+  }
+
+  handleNextTrack() {
+    for (let i = 0; i < this.state.artistTracks.trackName.length; i++) {
+      if (this.state.currentTrack === this.state.artistTracks.trackName[i]) {
+        this.setState({
+          currentTrack: this.state.artistTracks.trackName[(i + 1) % 10],
+          currentImage: this.state.artistTracks.imageUrl[(i + 1) % 10],
+          currentPlaying: this.state.artistTracks.preview_url[(i + 1) % 10]
+        });
+      }
+    }
+  }
+
+  handleCustomPlayer() {
+    if (this.state.currentPlaying !== "") {
+      this.setState({
+        customPlayer: !this.state.customPlayer
+      });
+    }
   }
 
   handleRedirect() {
@@ -46,7 +96,9 @@ class SongsPage extends React.Component {
 
   handleClick(item) {
     this.setState({
-      currentPlaying: item
+      currentPlaying: item.preview,
+      currentTrack: item.TrackName,
+      currentImage: item.ImageUrl
     });
   }
 
@@ -67,7 +119,7 @@ class SongsPage extends React.Component {
           artistTracks.trackName.push(response.tracks[i].name);
           artistTracks.albumName.push(response.tracks[i].album.name);
           artistTracks.preview_url.push(response.tracks[i].preview_url);
-          artistTracks.imageUrl.push(response.tracks[i].album.images[2].url);
+          artistTracks.imageUrl.push(response.tracks[i].album.images[0].url);
           return { artistTracks };
         });
       }
@@ -111,7 +163,9 @@ class SongsPage extends React.Component {
       preview_url
     } = this.state.artistTracks;
 
-    const items = [];
+    const items = [],
+      audio = [];
+
     for (let i = 0; i < 10; i++) {
       items.push(
         <SongContainer
@@ -124,6 +178,71 @@ class SongsPage extends React.Component {
         />
       );
     }
+    if (this.state.customPlayer === false) {
+      audio.push(
+        <AudioWrapper key="audio">
+          <StyledAudio
+            ref="audio_tag"
+            src={this.state.currentPlaying}
+            controls
+          />
+          <button onClick={this.handleCustomPlayer}>Toggle Player</button>
+        </AudioWrapper>
+      );
+    } else {
+      audio.push(
+        <MusicPlayer key="audio-toggle">
+          <img
+            height="50%"
+            width="100%"
+            src={this.state.currentImage}
+            alt="album custom player"
+          />
+          <div
+            style={{
+              color: "white",
+              display: "flex",
+              justifyContent: "flex-start"
+            }}
+          >
+            CurrentTrack-{this.state.currentTrack}
+          </div>
+          <audio
+            style={{ margin: "10px" }}
+            ref="audio_tag"
+            src={this.state.currentPlaying}
+            controls
+          />
+          <div
+            style={{
+              color: "white",
+              display: "flex",
+              justifyContent: "space-around",
+              width: "100%"
+            }}
+          >
+            <Icon
+              icon={baselineSkipPrevious}
+              color="white"
+              width="45px"
+              height="45px"
+              display="inline-block"
+              onClick={this.handlePreviousTrack}
+            />
+            <button onClick={this.handleCustomPlayer}>Toggle Player</button>
+            <Icon
+              icon={baselineSkipNext}
+              color="white"
+              width="45px"
+              height="45px"
+              display="inline-block"
+              onClick={this.handleNextTrack}
+            />
+          </div>
+        </MusicPlayer>
+      );
+    }
+
     return (
       <SongsWrapper>
         <HeaderContainer>
@@ -139,12 +258,7 @@ class SongsPage extends React.Component {
           <p>{this.state.artistInfo.name}</p>
         </HeaderContainer>
         <SectionContainer>{items}</SectionContainer>
-        <StyledAudio
-          ref="audio_tag"
-          src={this.state.currentPlaying}
-          controls
-          autoPlay
-        />
+        {audio}
         <NavBar currentPage="songs" />
       </SongsWrapper>
     );
