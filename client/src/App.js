@@ -9,7 +9,7 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 const spotifyApi = new SpotifyWebApi();
 
 const Login = () => {
-  return <a href="http://localhost:8888"> Login to Spotify !!</a>;
+  return <a href="http://localhost:8888"> Login to Spotify</a>;
 };
 
 export default class App extends Component {
